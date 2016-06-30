@@ -9,10 +9,12 @@ namespace Renderer.Brushes
 	/// </summary>
 	public class TextureColorBrush : Brush
 	{
-		private readonly SamplerState _sampler;
+		private SamplerState _sampler;
+		private DepthStencilState _depth;
 		private readonly Texture2D _texture;
 		private Vector3 _precalculated;
 		private Color _color;
+		private bool _isPrepared;
 
 		/// <summary>
 		/// Creates a new brush with a texture and color.
@@ -26,14 +28,6 @@ namespace Renderer.Brushes
 				throw new ArgumentNullException(nameof(texture));
 			}
 			_texture = texture;
-			// improve rendering of textures with a better filter
-			_sampler = new SamplerState
-			{
-				Filter = TextureFilter.LinearMipPoint,
-				AddressU = TextureAddressMode.Clamp,
-				AddressV = TextureAddressMode.Clamp,
-				AddressW = TextureAddressMode.Clamp
-			};
 			Color = color;
 		}
 
@@ -73,7 +67,7 @@ namespace Renderer.Brushes
 		/// If false and someone wants to use this brush, <see cref="Brush.Prepare"/> must be called before using the brush
 		/// in order to prevent undetermined side effects.
 		/// </summary>
-		public override bool IsPrepared => true;
+		public override bool IsPrepared => _isPrepared;
 
 		/// <summary>
 		/// Configures the given effect to use this brush.
@@ -95,6 +89,7 @@ namespace Renderer.Brushes
 			_texture.GraphicsDevice.SamplerStates[0] = _sampler;
 			// required to properly render alpha colors
 			_texture.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+			_texture.GraphicsDevice.DepthStencilState = _depth;
 		}
 
 		/// <summary>
@@ -102,7 +97,21 @@ namespace Renderer.Brushes
 		/// Wil be called before rendering it if <see cref="Brush.IsPrepared"/> returned false.
 		/// </summary>
 		public override void Prepare(IRenderContext renderContext)
-		{ }
+		{
+			_isPrepared = true;
+			// improve rendering of textures with a better filter
+			_sampler = new SamplerState
+			{
+				Filter = TextureFilter.LinearMipPoint,
+				AddressU = TextureAddressMode.Clamp,
+				AddressV = TextureAddressMode.Clamp,
+				AddressW = TextureAddressMode.Clamp
+			};
+			_depth = new DepthStencilState
+			{
+				DepthBufferEnable = true
+			};
+		}
 
 		/// <summary>
 		/// Returns a string that represents the current object.

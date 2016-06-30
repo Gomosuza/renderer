@@ -52,8 +52,8 @@ namespace TerrainSample
 			var tc3 = Color.LawnGreen;
 			var tc4 = Color.SandyBrown;
 
-			var targetLevel1 = .9f;
-			var targetLevel2 = .6f;
+			var targetLevel1 = .8f;
+			var targetLevel2 = .5f;
 			var targetLevel3 = .2f;
 			for (int y = 0; y < texture.Height; y++)
 			{

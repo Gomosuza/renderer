@@ -4,6 +4,7 @@ using Renderer;
 using Renderer.Brushes;
 using Renderer.Meshes;
 using Renderer.Pens;
+using System;
 using System.Collections.Generic;
 using Plane = Renderer.Meshes.Plane;
 
@@ -49,6 +50,9 @@ namespace TerrainSample
 		private void CreateTerrain(TextureGenerator textureGenerator)
 		{
 			// for now just render a cube so we have a point of reference
+
+			var height = 45;
+			var heightmap = CalculateRandomHeightmap(_width + 1, _height + 1, height);
 			var terrain = new TextureMeshDescriptionBuilder();
 			var vertices = new List<VertexPositionColorTexture>();
 			for (int y = 0; y < _height; y++)
@@ -58,15 +62,15 @@ namespace TerrainSample
 					var xCoord = x * CellSize;
 					var zCoord = y * CellSize;
 					var bbox = new BoundingBox(new Vector3(xCoord, 0, zCoord), new Vector3(xCoord + CellSize, 0, zCoord + CellSize));
-					var tileSize = new Vector2(1);
+
 					vertices.AddRange(new[]
-					{
-						new VertexPositionColorTexture(new Vector3(bbox.Max.X, 0, bbox.Min.Z), Color.White, new Vector2(tileSize.X, 0)),
-						new VertexPositionColorTexture(new Vector3(bbox.Min.X, 0, bbox.Max.Z), Color.White, new Vector2(0, tileSize.Y)),
-						new VertexPositionColorTexture(new Vector3(bbox.Min.X, 0, bbox.Min.Z), Color.White, new Vector2(0, 0)),
-						new VertexPositionColorTexture(new Vector3(bbox.Min.X, 0, bbox.Max.Z), Color.White, new Vector2(0, tileSize.Y)),
-						new VertexPositionColorTexture(new Vector3(bbox.Max.X, 0, bbox.Min.Z), Color.White, new Vector2(tileSize.X, 0)),
-						new VertexPositionColorTexture(new Vector3(bbox.Max.X, 0, bbox.Max.Z), Color.White, new Vector2(tileSize.X, tileSize.Y))
+				   {
+						new VertexPositionColorTexture(new Vector3(bbox.Max.X, heightmap[x+1,y], bbox.Min.Z), Color.White,  new Vector2(heightmap[x+1,y] / (float)height)),
+						new VertexPositionColorTexture(new Vector3(bbox.Min.X, heightmap[x,y+1], bbox.Max.Z), Color.White,  new Vector2(heightmap[x,y+1] / (float)height)),
+						new VertexPositionColorTexture(new Vector3(bbox.Min.X, heightmap[x,y], bbox.Min.Z), Color.White,  new Vector2(heightmap[x,y] / (float)height)),
+						new VertexPositionColorTexture(new Vector3(bbox.Min.X, heightmap[x,y+1], bbox.Max.Z), Color.White,  new Vector2(heightmap[x,y+1] / (float)height)),
+						new VertexPositionColorTexture(new Vector3(bbox.Max.X, heightmap[x+1,y], bbox.Min.Z), Color.White,  new Vector2(heightmap[x+1,y] / (float)height)),
+						new VertexPositionColorTexture(new Vector3(bbox.Max.X, heightmap[x+1,y+1], bbox.Max.Z), Color.White, new Vector2(heightmap[x+1,y+1] / (float)height))
 					});
 				}
 
@@ -75,6 +79,18 @@ namespace TerrainSample
 
 			var terrainTex = _textureCache.GetOrCreateValue("terrain", key => textureGenerator.CreateTerrainTexture());
 			_terrainBrush = new TextureBrush(terrainTex);
+		}
+
+		private static int[,] CalculateRandomHeightmap(int width, int length, int maxHeight)
+		{
+			var h = new int[width, length];
+			var rnd = new Random();
+			for (int y = 0; y < length; y++)
+				for (int x = 0; x < width; x++)
+				{
+					h[x, y] = rnd.Next(0, maxHeight);
+				}
+			return h;
 		}
 
 		private void CreateSkybox(TextureGenerator textureGenerator)
