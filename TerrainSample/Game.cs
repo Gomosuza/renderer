@@ -27,11 +27,14 @@ namespace TerrainSample
 			IsFixedTimeStep = false;
 
 			_renderContext = new DefaultRenderContext(_graphicsDeviceManager, Content);
-			_camera = new FirstPersonCamera(GraphicsDevice, Vector3.UnitZ * 50, CameraMode.Plane);
 
 			const int width = 1024;
 			const int height = 1024;
 			_world = new World(_renderContext, width, height);
+
+			// center camera in world
+			var center = new Vector3(_world.CellSize * width / 2f, 50, _world.CellSize * height / 2f);
+			_camera = new FirstPersonCamera(GraphicsDevice, center, CameraMode.Plane);
 		}
 
 		protected override void Update(GameTime gameTime)

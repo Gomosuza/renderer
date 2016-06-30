@@ -14,12 +14,14 @@ namespace TerrainSample
 	/// </summary>
 	public class World
 	{
-		private int _height;
-		private int _width;
+		private readonly int _height;
+		private readonly int _width;
 		private readonly IRenderContext _renderContext;
 		private Mesh _skybox;
 		private Mesh _terrain;
 		private SkyboxBrush _skyboxTextureBrush;
+		private TextureBrush _terrainBrush;
+
 		private static readonly Dictionary<string, Texture2D> _textureCache = new Dictionary<string, Texture2D>();
 
 		/// <summary>
@@ -34,19 +36,48 @@ namespace TerrainSample
 			_width = width;
 			_height = height;
 
-			CreateSkybox();
-			CreateTerrain();
+			var textureGenerator = new TextureGenerator(renderContext.GraphicsDevice);
+			CreateSkybox(textureGenerator);
+			CreateTerrain(textureGenerator);
 		}
 
-		private void CreateTerrain()
+		/// <summary>
+		/// Cell size of each terrain quad.
+		/// </summary>
+		public int CellSize => 10;
+
+		private void CreateTerrain(TextureGenerator textureGenerator)
 		{
 			// for now just render a cube so we have a point of reference
 			var terrain = new TextureMeshDescriptionBuilder();
-			terrain.AddBox(new BoundingBox(Vector3.Zero, Vector3.One * 5), Vector2.One);
+			var vertices = new List<VertexPositionColorTexture>();
+			for (int y = 0; y < _height; y++)
+				for (int x = 0; x < _width; x++)
+				{
+					// add a quad per cell
+					var xCoord = x * CellSize;
+					var zCoord = y * CellSize;
+					var bbox = new BoundingBox(new Vector3(xCoord, 0, zCoord), new Vector3(xCoord + CellSize, 0, zCoord + CellSize));
+					var tileSize = new Vector2(1);
+					vertices.AddRange(new[]
+					{
+						new VertexPositionColorTexture(new Vector3(bbox.Max.X, 0, bbox.Min.Z), Color.White, new Vector2(tileSize.X, 0)),
+						new VertexPositionColorTexture(new Vector3(bbox.Min.X, 0, bbox.Max.Z), Color.White, new Vector2(0, tileSize.Y)),
+						new VertexPositionColorTexture(new Vector3(bbox.Min.X, 0, bbox.Min.Z), Color.White, new Vector2(0, 0)),
+						new VertexPositionColorTexture(new Vector3(bbox.Min.X, 0, bbox.Max.Z), Color.White, new Vector2(0, tileSize.Y)),
+						new VertexPositionColorTexture(new Vector3(bbox.Max.X, 0, bbox.Min.Z), Color.White, new Vector2(tileSize.X, 0)),
+						new VertexPositionColorTexture(new Vector3(bbox.Max.X, 0, bbox.Max.Z), Color.White, new Vector2(tileSize.X, tileSize.Y))
+					});
+				}
+
+			terrain.AddVertices(vertices);
 			_terrain = _renderContext.MeshCreator.CreateMesh(terrain);
+
+			var terrainTex = _textureCache.GetOrCreateValue("terrain", key => textureGenerator.CreateTerrainTexture());
+			_terrainBrush = new TextureBrush(terrainTex);
 		}
 
-		private void CreateSkybox()
+		private void CreateSkybox(TextureGenerator textureGenerator)
 		{
 			var skybox = new TextureMeshDescriptionBuilder();
 			var bbox = new BoundingBox(-Vector3.One, Vector3.One);
@@ -56,11 +87,10 @@ namespace TerrainSample
 			skybox.AddPlane(bbox, Plane.PositiveX, false, Vector2.One);
 			skybox.AddPlane(bbox, Plane.NegativeZ, false, Vector2.One);
 			skybox.AddPlane(bbox, Plane.PositiveZ, false, Vector2.One);
-			
+
 			_skybox = _renderContext.MeshCreator.CreateMesh(skybox);
 
-			var gen = new TextureGenerator();
-			var skyboxTex = _textureCache.GetOrCreateValue("skybox", key => gen.CreateSkyboxTexture(_renderContext.GraphicsDevice));
+			var skyboxTex = _textureCache.GetOrCreateValue("skybox", key => textureGenerator.CreateSkyboxTexture());
 
 			_skyboxTextureBrush = new SkyboxBrush(skyboxTex);
 		}
@@ -81,7 +111,7 @@ namespace TerrainSample
 
 		private void DrawTerrain(IRenderContext renderContext, ICamera camera, Matrix world)
 		{
-			renderContext.DrawMesh(_terrain, world, camera.View, camera.Projection, new SolidColorBrush(Color.Green));
+			renderContext.DrawMesh(_terrain, world, camera.View, camera.Projection, _terrainBrush, new Pen(Color.Black));
 		}
 	}
 }
