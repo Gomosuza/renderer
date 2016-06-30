@@ -38,6 +38,10 @@ namespace TerrainSample
 		{
 			base.Update(gameTime);
 
+			if (!IsActive)
+				return;
+			// don't reset camera if window is not focused
+
 			var mouseState = Mouse.GetState();
 
 			var center = new Point(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
@@ -77,7 +81,7 @@ namespace TerrainSample
 		{
 			base.Draw(gameTime);
 
-			_renderContext.Clear(Color.Black);
+			_renderContext.Clear(Color.White);
 			_renderContext.Attach();
 
 			_world.Draw(_renderContext, _camera, gameTime);
