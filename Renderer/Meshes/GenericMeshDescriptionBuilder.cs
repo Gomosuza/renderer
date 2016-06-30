@@ -12,8 +12,6 @@ namespace Renderer.Meshes
 	/// <typeparam name="T"></typeparam>
 	public abstract class GenericMeshDescriptionBuilder<T> : IMeshDescription<T> where T : struct, IVertexType
 	{
-		private readonly List<T> _vertices;
-
 		/// <summary>
 		/// Creates a new mesh description builder.
 		/// This type will always use <see cref="PrimitiveType.TriangleList"/>.
@@ -23,7 +21,7 @@ namespace Renderer.Meshes
 			// no need to support other types, we always use this
 			// if the user wants other type he can implement it himself
 			PrimitiveType = PrimitiveType.TriangleList;
-			_vertices = new List<T>();
+			Vertices = new T[0];
 		}
 
 		/// <summary>
@@ -34,12 +32,12 @@ namespace Renderer.Meshes
 		/// <summary>
 		/// The total vertex count.
 		/// </summary>
-		public int VertexCount => _vertices.Count;
+		public int VertexCount => Vertices.Length;
 
 		/// <summary>
 		/// The actual vertices.
 		/// </summary>
-		public T[] Vertices => _vertices.ToArray();
+		public T[] Vertices { get; private set; }
 
 		/// <summary>
 		/// Creates a new plane on the YZ axis.
@@ -83,7 +81,16 @@ namespace Renderer.Meshes
 		/// <param name="vertices"></param>
 		public void AddVertices(List<T> vertices)
 		{
-			_vertices.AddRange(vertices);
+			int srcOffset = Vertices.Length;
+			var tmp = Vertices;
+			// increase array
+			Array.Resize(ref tmp, tmp.Length + vertices.Count);
+			// and insert all vertices manually
+			for (int i = 0; i < vertices.Count; i++)
+			{
+				tmp[srcOffset + i] = vertices[i];
+			}
+			Vertices = tmp;
 		}
 
 		/// <summary>
@@ -171,7 +178,9 @@ namespace Renderer.Meshes
 		/// </summary>
 		public void Clear()
 		{
-			_vertices.Clear();
+			var vertices = Vertices;
+			Array.Resize(ref vertices, 0);
+			Vertices = vertices;
 		}
 	}
 }
