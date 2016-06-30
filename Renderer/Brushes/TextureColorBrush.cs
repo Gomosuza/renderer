@@ -29,7 +29,10 @@ namespace Renderer.Brushes
 			// improve rendering of textures with a better filter
 			_sampler = new SamplerState
 			{
-				Filter = TextureFilter.LinearMipPoint
+				Filter = TextureFilter.LinearMipPoint,
+				AddressU = TextureAddressMode.Clamp,
+				AddressV = TextureAddressMode.Clamp,
+				AddressW = TextureAddressMode.Clamp
 			};
 			Color = color;
 		}
