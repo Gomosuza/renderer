@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenderingTargetSample", "Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrainSample", "TerrainSample\TerrainSample.csproj", "{C092C171-F266-4BBA-A54F-0CFBC1469872}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDemo", "WpfDemo\WpfDemo.csproj", "{F46A07B5-828A-46C3-BB69-05B9EDFD2C21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C092C171-F266-4BBA-A54F-0CFBC1469872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C092C171-F266-4BBA-A54F-0CFBC1469872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C092C171-F266-4BBA-A54F-0CFBC1469872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F46A07B5-828A-46C3-BB69-05B9EDFD2C21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F46A07B5-828A-46C3-BB69-05B9EDFD2C21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F46A07B5-828A-46C3-BB69-05B9EDFD2C21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F46A07B5-828A-46C3-BB69-05B9EDFD2C21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
