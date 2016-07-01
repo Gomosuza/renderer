@@ -49,7 +49,10 @@ namespace TerrainSample
 				return;
 
 			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+			{
 				Exit();
+				return;
+			}
 			// don't reset camera if window is not focused
 
 			var mouseState = Mouse.GetState();
