@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Renderer;
 using Renderer.Brushes;
 using Renderer.Extensions;
@@ -26,6 +27,7 @@ namespace RenderingTargetSample
 
 		protected override void Initialize()
 		{
+			Window.Title = "RenderTargetSample - Esc to quit";
 			base.Initialize();
 			IsMouseVisible = true;
 			IsFixedTimeStep = false;
@@ -59,6 +61,11 @@ namespace RenderingTargetSample
 		protected override void Update(GameTime gameTime)
 		{
 			base.Update(gameTime);
+			if (!IsActive)
+				return;
+
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+				Exit();
 			_camera.Update(gameTime);
 		}
 

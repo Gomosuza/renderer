@@ -25,6 +25,7 @@ namespace TerrainSample
 
 		protected override void Initialize()
 		{
+			Window.Title = "TerrainSample - Esc to quit";
 			base.Initialize();
 			IsMouseVisible = false;
 			IsFixedTimeStep = false;
@@ -46,6 +47,9 @@ namespace TerrainSample
 
 			if (!IsActive)
 				return;
+
+			if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+				Exit();
 			// don't reset camera if window is not focused
 
 			var mouseState = Mouse.GetState();
