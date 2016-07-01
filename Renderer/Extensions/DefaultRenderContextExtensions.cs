@@ -42,24 +42,29 @@ namespace Renderer.Extensions
 			if (!vp.Intersects(rectangle))
 				return; // outside of view area
 
-			// gives us value between 0 and 1, but we need value between -1 and 1, so multiply by 2 and subtract 1
-			var minX = rectangle.Left / (float)vp.Width * 2 - 1;
-			var maxX = rectangle.Right / (float)vp.Width * 2 - 1;
-			// y coordinates must also be flipped
-			var minY = 1 - rectangle.Top / (float)vp.Height * 2;
-			var maxY = 1 - rectangle.Bottom / (float)vp.Height * 2;
+			if (_quad == null)
+			{
+				// default clip space coordinates to fill entire screen
+				const int minX = -1;
+				const int maxX = 1;
+				const int minY = 1;
+				const int maxY = -1;
+				// only create mesh once
+				var desc = new TextureMeshDescriptionBuilder();
+				desc.AddPlaneXy(minX, maxX, minY, maxY, 0, false, Vector2.One);
+				_quad = renderContext.MeshCreator.CreateMesh(desc);
+			}
 
-			// this wastes resources as it rebuilds the vertices each draw call but we warned the user that this isn't an efficient way of drawing
-			var desc = new TextureMeshDescriptionBuilder();
-			desc.AddPlaneXy(minX, maxX, minY, maxY, 0, false, Vector2.One);
-			var mesh = renderContext.MeshCreator.CreateMesh(desc);
-
-			// half pixel offset as required by DirectX 9: http://drilian.com/2008/11/25/understanding-half-pixel-and-half-texel-offsets/
-			// we get the size of a pixel by divinfing 1 / width and 1 / height, negate so we move back to top left corner
-			var proj = Matrix.Identity * Matrix.CreateTranslation(-1f / vp.Width, -1f / vp.Height, 0);
-			// using identity for world, view & projection leaves us with just the clip space coordinates calculated above
-
-			renderContext.DrawMesh(mesh, Matrix.Identity, Matrix.Identity, proj, new TextureColorBrush(texture, color));
+			// quad is always filling entire clipspace, apply transform based on rectangle dimensions
+			// clip space is -1 to 1 on x and 1 to -1 on y coordinate, so first scale down then transform. also note that origin is center of screen so we translate by 0.5f - .. to offset the origin to top left
+			var world = Matrix.CreateScale(new Vector3(rectangle.Width / (float)vp.Width, rectangle.Height / (float)vp.Height, 0)) *
+						Matrix.CreateTranslation(new Vector3(rectangle.X / (float)vp.Width * 2 - 0.5f, 0.5f - rectangle.Y / (float)vp.Height * 2, 0));
+			renderContext.DrawMesh(_quad, world, Matrix.Identity, Matrix.Identity, new TextureColorBrush(texture, color));
 		}
+
+		/// <summary>
+		/// Used by DrawTexture method only.
+		/// </summary>
+		private static Mesh _quad;
 	}
 }
