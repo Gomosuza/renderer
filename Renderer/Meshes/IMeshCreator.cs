@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Renderer.Meshes
 {
@@ -29,7 +30,7 @@ namespace Renderer.Meshes
 		/// <param name="vertices"></param>
 		/// <param name="usage"></param>
 		/// <returns></returns>
-		DynamicMesh CreateDynamicMesh<T>(PrimitiveType type, T[] vertices, DynamicMeshUsage usage)
+		DynamicMesh CreateDynamicMesh<T>(PrimitiveType type, List<T> vertices, DynamicMeshUsage usage)
 			where T : struct, IVertexType;
 
 		/// <summary>
@@ -49,7 +50,7 @@ namespace Renderer.Meshes
 		/// <param name="type"></param>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		Mesh CreateMesh<T>(PrimitiveType type, T[] vertices)
+		Mesh CreateMesh<T>(PrimitiveType type, List<T> vertices)
 			where T : struct, IVertexType;
 
 		/// <summary>

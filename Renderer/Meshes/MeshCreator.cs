@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Renderer.Meshes
 {
@@ -58,14 +59,14 @@ namespace Renderer.Meshes
 		/// <param name="vertices"></param>
 		/// <param name="usage"></param>
 		/// <returns></returns>
-		public DynamicMesh CreateDynamicMesh<T>(PrimitiveType type, T[] vertices, DynamicMeshUsage usage)
+		public DynamicMesh CreateDynamicMesh<T>(PrimitiveType type, List<T> vertices, DynamicMeshUsage usage)
 			where T : struct, IVertexType
 		{
 			if (vertices == null)
 			{
 				throw new ArgumentNullException();
 			}
-			if (vertices.Length == 0)
+			if (vertices.Count == 0)
 			{
 				throw new ArgumentException();
 			}
@@ -74,7 +75,7 @@ namespace Renderer.Meshes
 			var decl = vertices[0].VertexDeclaration;
 
 			var mesh = CreateDynamicMesh(type, vertexType, decl, usage);
-			mesh.Update(vertices);
+			mesh.Update(vertices.ToArray());
 			return mesh;
 		}
 
@@ -102,10 +103,10 @@ namespace Renderer.Meshes
 		/// <param name="type"></param>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		public Mesh CreateMesh<T>(PrimitiveType type, T[] vertices)
+		public Mesh CreateMesh<T>(PrimitiveType type, List<T> vertices)
 			where T : struct, IVertexType
 		{
-			var mesh = new StaticMesh<T>(_device, type, vertices);
+			var mesh = new StaticMesh<T>(_device, type, vertices.ToArray());
 			return mesh;
 		}
 
