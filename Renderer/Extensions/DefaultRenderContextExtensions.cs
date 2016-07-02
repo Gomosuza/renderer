@@ -58,7 +58,7 @@ namespace Renderer.Extensions
 			// quad is always filling entire clipspace, apply transform based on rectangle dimensions
 			// clip space is -1 to 1 on x and 1 to -1 on y coordinate, so first scale down then transform. also note that origin is center of screen so we translate by 0.5f - .. to offset the origin to top left
 			var world = Matrix.CreateScale(new Vector3(rectangle.Width / (float)vp.Width, rectangle.Height / (float)vp.Height, 0)) *
-						Matrix.CreateTranslation(new Vector3(rectangle.X / (float)vp.Width * 2 - 0.5f, 0.5f - rectangle.Y / (float)vp.Height * 2, 0));
+						Matrix.CreateTranslation(new Vector3(rectangle.X / (float)vp.Width * 2 - 1f + rectangle.Width / (float)vp.Width, 1f - rectangle.Y / (float)vp.Height * 2 - rectangle.Height / (float)vp.Height, 0));
 			renderContext.DrawMesh(_quad, world, Matrix.Identity, Matrix.Identity, new TextureColorBrush(texture, color));
 		}
 

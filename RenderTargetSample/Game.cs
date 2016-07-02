@@ -151,6 +151,10 @@ namespace RenderingTargetSample
 			// bottom left contains the rendertarget we filled with red
 			_renderContext.DrawTexture(_rt3, new Rectangle(0, h / 2, w / 2, h / 2), Color.White);
 
+			var border = new Rectangle(w - 50, h - 50, 50, 50);
+			_renderContext.DrawTexture(_pixel, border, Color.Yellow);
+			var border2 = new Rectangle(w - 100, h - 100, 100, 50);
+			_renderContext.DrawTexture(_pixel, border2, Color.Red);
 			_renderContext.Detach();
 		}
 	}
