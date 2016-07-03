@@ -55,17 +55,18 @@ namespace Renderer.Meshes
 
 		public override void Attach()
 		{
-			_vertexBuffer.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+			_device.SetVertexBuffer(_vertexBuffer);
 		}
 
 		public override void Detach()
 		{
-			_vertexBuffer.GraphicsDevice.SetVertexBuffer(null);
+			_device.SetVertexBuffer(null);
 		}
 
 		public override void Draw()
 		{
-			_vertexBuffer.GraphicsDevice.DrawPrimitives(_type, _verticesStartIndex, _numPrimitives);
+			if (_vertexBuffer != null)
+				_device.DrawPrimitives(_type, _verticesStartIndex, _numPrimitives);
 		}
 
 		private void Append<T>(T[] vertices) where T : struct
