@@ -68,7 +68,7 @@ namespace Renderer.Meshes
 			}
 			if (vertices.Count == 0)
 			{
-				throw new ArgumentException();
+				throw new ArgumentException("For dynamic meshes at least one vertex must be provided to get the vertex decleration type to use.");
 			}
 
 			var vertexType = typeof(T);

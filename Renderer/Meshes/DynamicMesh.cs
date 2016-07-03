@@ -4,7 +4,7 @@ using System;
 namespace Renderer.Meshes
 {
 	/// <summary>
-	/// Mutable, unindexes mesh.
+	/// Mutable, unindexes mesh that can be updated (i.e. all vertices replaced).
 	/// </summary>
 	public abstract class DynamicMesh : Mesh
 	{
@@ -18,6 +18,8 @@ namespace Renderer.Meshes
 		/// <exception cref="InvalidOperationException"></exception>
 		public static int CalcPrimitives(PrimitiveType type, int vertexCount)
 		{
+			if (vertexCount == 0)
+				return 0;
 			switch (type)
 			{
 				case PrimitiveType.LineList:
@@ -59,6 +61,7 @@ namespace Renderer.Meshes
 
 		/// <summary>
 		/// Updates the mesh with the provided vertices.
+		/// This will replace all existing vertices in the mesh.
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <typeparam name="T"></typeparam>
@@ -67,6 +70,7 @@ namespace Renderer.Meshes
 
 		/// <summary>
 		/// Updates the mesh with the provided vertices of the provided primitive type.
+		/// This will replace all existing vertices in the mesh.
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <param name="type"></param>
