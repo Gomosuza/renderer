@@ -69,6 +69,8 @@
     <Compile Include="Meshes\StaticMesh.cs" />
     <Compile Include="DefaultRenderContext.cs" />
     <Compile Include="IRenderContext.cs" />
+    <Compile Include="Pens\SolidColorPen.cs" />
+    <Compile Include="Pens\VertexColorPen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pens\Pen.cs" />
   </ItemGroup>

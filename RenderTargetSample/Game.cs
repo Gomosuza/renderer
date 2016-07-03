@@ -94,7 +94,7 @@ namespace RenderingTargetSample
 				var world = Matrix.CreateTranslation(new Vector3(-5, -5, -5)) * Matrix.CreateRotationY(s) * Matrix.CreateRotationX(s);
 				var v = _camera.View;
 				var p = _camera.Projection;
-				_renderContext.DrawMesh(_mesh, world, v, p, new SolidColorBrush(Color.Green), new Pen(Color.Black));
+				_renderContext.DrawMesh(_mesh, world, v, p, new SolidColorBrush(Color.Green), new SolidColorPen(Color.Black));
 				_renderContext.Detach();
 			}
 			// now we render to the original backbuffer again because ChangeRenderTarget reset the state automatically

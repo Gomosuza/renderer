@@ -1,29 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Renderer.Brushes;
 
-namespace Renderer.Brushes
+namespace Renderer.Pens
 {
 	/// <summary>
-	/// A brush that paints with a single color.
+	/// A pen that draws with a solid color.
 	/// </summary>
-	public sealed class SolidColorBrush : Brush
+	public class SolidColorPen : Pen
 	{
+		private readonly CullMode? _cullMode;
 		private Color _color;
-		private Vector3 _precalculated;
+		private RasterizerState _rasterizer;
 		private SamplerState _sampler;
 		private bool _isPrepared;
+		private Vector3 _precalculated;
 
 		/// <summary>
-		/// Create a new solid color brush with the specific color.
+		/// Creates a new instance of the solidcolor pen with the specific color.
 		/// </summary>
 		/// <param name="color"></param>
-		public SolidColorBrush(Color color)
+		/// <param name="cullMode">The explicit cull mode to be used. If not set the default mode of the rendercontext will be used.</param>
+		public SolidColorPen(Color color, CullMode? cullMode = null)
 		{
+			_cullMode = cullMode;
 			Color = color;
 		}
 
 		/// <summary>
-		/// The color used by the brush.
+		/// The color that the current pen is using.
 		/// </summary>
 		public Color Color
 		{
@@ -38,23 +43,11 @@ namespace Renderer.Brushes
 		}
 
 		/// <summary>
-		/// Whether or not this brush is already prepared for drawing.
-		/// If false and someone wants to use this brush, <see cref="Brush.Prepare"/> must be called before using the brush
+		/// Whether or not this pen is already prepared for drawing.
+		/// If false and someone wants to use this pen, <see cref="Brush.Prepare"/> must be called before using the pen
 		/// in order to prevent undetermined side effects.
 		/// </summary>
 		public override bool IsPrepared => _isPrepared;
-
-		/// <summary>
-		/// Returns a string that represents the current object.
-		/// </summary>
-		/// <returns>
-		/// A string that represents the current object.
-		/// </returns>
-		/// <filterpriority>2</filterpriority>
-		public override string ToString()
-		{
-			return $"Color brush: {Color}";
-		}
 
 		/// <summary>
 		/// Configures the given effect to use this brush.
@@ -69,20 +62,32 @@ namespace Renderer.Brushes
 			effect.VertexColorEnabled = false;
 			effect.TextureEnabled = false;
 
+			if (_rasterizer != null)
+				effect.GraphicsDevice.RasterizerState = _rasterizer;
+
 			effect.GraphicsDevice.SamplerStates[0] = _sampler;
 		}
 
 		/// <summary>
 		/// Prepares this brush for drawing.
-		/// Wil be called before rendering it if <see cref="Brush.IsPrepared"/> returned false.
+		/// Wil be called before rendering it if <see cref="Pen.IsPrepared"/> returned false.
 		/// </summary>
 		public override void Prepare(IRenderContext renderContext)
 		{
-			// better filter helps for solid objects (esp. borders)
 			_sampler = new SamplerState
 			{
 				Filter = TextureFilter.LinearMipPoint
 			};
+			if (_cullMode.HasValue)
+			{
+				_rasterizer = new RasterizerState
+				{
+					CullMode = _cullMode.Value,
+					FillMode = FillMode.WireFrame,
+					DepthBias = -0.1f,
+					MultiSampleAntiAlias = true
+				};
+			}
 			_isPrepared = true;
 		}
 	}
