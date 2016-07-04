@@ -9,7 +9,7 @@ namespace Renderer.Meshes
 	/// Monogame/Xna recommends to just use DrawUserPrimitives, this class is able to do the copy in a more efficient way than if you manually created a vertex buffer, SetData into it, and then drew from that.
 	/// Fix for common issue: http://blogs.msdn.com/b/shawnhar/archive/2010/07/07/setdataoptions-nooverwrite-versus-discard.aspx
 	/// </summary>
-	internal sealed class AppendingMesh : DynamicMesh
+	internal sealed class CircularBufferMesh : DynamicMesh
 	{
 		private readonly VertexDeclaration _declaration;
 		private readonly GraphicsDevice _device;
@@ -21,7 +21,7 @@ namespace Renderer.Meshes
 		private DynamicVertexBuffer _vertexBuffer;
 		private int _verticesStartIndex;
 
-		public AppendingMesh(GraphicsDevice device, Type vertexType, VertexDeclaration decl, PrimitiveType type)
+		public CircularBufferMesh(GraphicsDevice device, Type vertexType, VertexDeclaration decl, PrimitiveType type)
 		{
 			_device = device;
 			_vertexType = vertexType;

@@ -42,7 +42,7 @@ namespace Renderer.Meshes
 			switch (usage)
 			{
 				case DynamicMeshUsage.UpdateOften:
-					return new AppendingMesh(_device, vertexType, declaration, type);
+					return new CircularBufferMesh(_device, vertexType, declaration, type);
 				case DynamicMeshUsage.UpdateSeldom:
 					return new UpdatableDynamicMesh(_device, type);
 				default:
