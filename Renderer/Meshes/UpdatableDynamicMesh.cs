@@ -16,6 +16,9 @@ namespace Renderer.Meshes
 		private DynamicVertexBuffer _vertexBuffer;
 		private int _vertices;
 
+		private int _startIndex;
+		private int _primitiveCountToDraw;
+
 		public UpdatableDynamicMesh(GraphicsDevice device, PrimitiveType type)
 		{
 			_type = type;
@@ -27,6 +30,8 @@ namespace Renderer.Meshes
 		public override PrimitiveType Type => _type;
 
 		public override int Vertices => _vertices;
+
+		public override int PrimitiveRange => _primitiveCountToDraw;
 
 		public override void Update<T>(T[] vertices)
 		{
@@ -57,6 +62,8 @@ namespace Renderer.Meshes
 				_vertices = vertices.Length;
 				_vertexBuffer.SetData(vertices);
 			}
+			_startIndex = 0;
+			_primitiveCountToDraw = _primitives;
 		}
 
 		public override void Update<T>(T[] vertices, PrimitiveType type)
@@ -74,6 +81,17 @@ namespace Renderer.Meshes
 
 				throw;
 			}
+		}
+
+		public override void UpdatePrimitiveRange(int startIndex, int primitiveCount)
+		{
+			if (startIndex < 0 || (startIndex > 0 && startIndex >= Primitives))
+				throw new ArgumentOutOfRangeException(nameof(startIndex));
+			if (primitiveCount < 0 || startIndex + primitiveCount > Primitives)
+				throw new ArgumentOutOfRangeException(nameof(primitiveCount));
+
+			_startIndex = startIndex;
+			_primitiveCountToDraw = primitiveCount;
 		}
 
 		public override void Attach()
@@ -98,7 +116,7 @@ namespace Renderer.Meshes
 				return;
 			}
 
-			_device.DrawPrimitives(_type, 0, _primitives);
+			_device.DrawPrimitives(_type, _startIndex, _primitiveCountToDraw);
 		}
 	}
 }

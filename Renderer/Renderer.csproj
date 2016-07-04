@@ -59,7 +59,7 @@
     <Compile Include="Meshes\GenericMeshDescriptionBuilder.cs" />
     <Compile Include="Meshes\IMeshDescription.cs" />
     <Compile Include="Meshes\Mesh.cs" />
-    <Compile Include="Meshes\AppendingMesh.cs" />
+    <Compile Include="Meshes\CircularBufferMesh.cs" />
     <Compile Include="Meshes\DynamicMesh.cs" />
     <Compile Include="Meshes\UpdatableDynamicMesh.cs" />
     <Compile Include="Meshes\IMeshCreator.cs" />

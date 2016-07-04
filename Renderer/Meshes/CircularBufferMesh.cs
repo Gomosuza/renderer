@@ -19,7 +19,10 @@ namespace Renderer.Meshes
 		private int _numVertices;
 		private PrimitiveType _type;
 		private DynamicVertexBuffer _vertexBuffer;
-		private int _verticesStartIndex;
+		private int _internalVerticesStartIndex;
+
+		private int _userStartIndex;
+		private int _userPrimitiveCount;
 
 		public CircularBufferMesh(GraphicsDevice device, Type vertexType, VertexDeclaration decl, PrimitiveType type)
 		{
@@ -35,7 +38,9 @@ namespace Renderer.Meshes
 
 		public override int Vertices => _numVertices;
 
-		private int VerticesEndIndex => _verticesStartIndex + _numVertices;
+		private int VerticesEndIndex => _internalVerticesStartIndex + _numVertices;
+
+		public override int PrimitiveRange => _userPrimitiveCount;
 
 		public override void Update<T>(T[] vertices)
 		{
@@ -51,6 +56,19 @@ namespace Renderer.Meshes
 
 			_type = type;
 			Append(vertices);
+			_userStartIndex = 0;
+			_userPrimitiveCount = _numPrimitives;
+		}
+
+		public override void UpdatePrimitiveRange(int startIndex, int primitiveCount)
+		{
+			if (startIndex < 0 || (startIndex > 0 && startIndex >= Primitives))
+				throw new ArgumentOutOfRangeException(nameof(startIndex));
+			if (primitiveCount < 0 || startIndex + primitiveCount > Primitives)
+				throw new ArgumentOutOfRangeException(nameof(primitiveCount));
+
+			_userStartIndex = startIndex;
+			_userPrimitiveCount = primitiveCount;
 		}
 
 		public override void Attach()
@@ -66,7 +84,7 @@ namespace Renderer.Meshes
 		public override void Draw()
 		{
 			if (_vertexBuffer != null)
-				_device.DrawPrimitives(_type, _verticesStartIndex, _numPrimitives);
+				_device.DrawPrimitives(_type, _internalVerticesStartIndex + _userStartIndex, _userPrimitiveCount);
 		}
 
 		private void Append<T>(T[] vertices) where T : struct
@@ -83,7 +101,7 @@ namespace Renderer.Meshes
 				int newVertexSize = (int)(Math.Ceiling(1.0 * minVertexSize / growSize) * growSize);
 
 				_vertexBuffer = new DynamicVertexBuffer(_device, _declaration, newVertexSize, BufferUsage.WriteOnly);
-				_verticesStartIndex = 0;
+				_internalVerticesStartIndex = 0;
 				_numVertices = 0;
 			}
 
@@ -91,7 +109,7 @@ namespace Renderer.Meshes
 			{
 				// Begin at start...
 				_vertexBuffer.SetData(vertices, 0, vertexLength, SetDataOptions.Discard);
-				_verticesStartIndex = 0;
+				_internalVerticesStartIndex = 0;
 				_numVertices = vertexLength;
 			}
 			else
@@ -104,7 +122,7 @@ namespace Renderer.Meshes
 					_declaration.VertexStride, //< size of ONE vertex
 					SetDataOptions.NoOverwrite);
 
-				_verticesStartIndex += _numVertices;
+				_internalVerticesStartIndex += _numVertices;
 				_numVertices = vertices.Length;
 			}
 

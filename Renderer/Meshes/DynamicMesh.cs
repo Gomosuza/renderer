@@ -4,10 +4,15 @@ using System;
 namespace Renderer.Meshes
 {
 	/// <summary>
-	/// Mutable, unindexes mesh that can be updated (i.e. all vertices replaced).
+	/// Mutable, unindexes mesh that can be updated.
 	/// </summary>
 	public abstract class DynamicMesh : Mesh
 	{
+		/// <summary>
+		/// The number of primitives that are actually being drawn with this mesh. This is usually equal to Primitives, unless you called <see cref="UpdatePrimitiveRange"/>.
+		/// </summary>
+		public abstract int PrimitiveRange { get; }
+
 		/// <summary>
 		/// Calculates the number of primitives requires for a specific vertex count using the specific primitive type.
 		/// </summary>
@@ -77,5 +82,14 @@ namespace Renderer.Meshes
 		/// <typeparam name="T"></typeparam>
 		public abstract void Update<T>(T[] vertices, PrimitiveType type)
 			where T : struct, IVertexType;
+
+		/// <summary>
+		/// Sets start index and number of vertices to draw for the next draw call.
+		/// Note that the values are reset to default (startIndex = 0, primitiveCount = array length)
+		/// when any of the other Update(vertices) methods are called.
+		/// </summary>
+		/// <param name="startIndex">The index where to start drawing. This must be smaller than Vertices.</param>
+		/// <param name="primitiveCount">The number of primitives to draw starting at startIndex. May not exceed Vertices - startIndex</param>
+		public abstract void UpdatePrimitiveRange(int startIndex, int primitiveCount);
 	}
 }

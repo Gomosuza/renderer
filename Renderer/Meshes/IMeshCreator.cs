@@ -58,6 +58,7 @@ namespace Renderer.Meshes
 		/// </summary>
 		/// <param name="description"></param>
 		/// <returns></returns>
-		Mesh CreateMesh<T>(IMeshDescription<T> description) where T : struct, IVertexType;
+		Mesh CreateMesh<T>(IMeshDescription<T> description)
+			where T : struct, IVertexType;
 	}
 }
