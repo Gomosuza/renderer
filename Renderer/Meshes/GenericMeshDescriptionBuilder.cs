@@ -37,7 +37,7 @@ namespace Renderer.Meshes
 		/// <summary>
 		/// The actual vertices.
 		/// </summary>
-		public List<T> Vertices { get; private set; }
+		public List<T> Vertices { get; }
 
 		/// <summary>
 		/// Creates a new plane on the YZ axis.
