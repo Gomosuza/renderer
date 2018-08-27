@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
 using Terrain;
 
 namespace TerrainSample
@@ -43,7 +44,7 @@ namespace TerrainSample
 
 			if (keyboardState.IsKeyDown(Keys.Escape))
 			{
-				Exit();
+				Environment.Exit(0);
 				return;
 			}
 
