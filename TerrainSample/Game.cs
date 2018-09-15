@@ -15,10 +15,7 @@ namespace TerrainSample
 
         public Game()
         {
-            _graphicsDeviceManager = new GraphicsDeviceManager(this)
-            {
-                PreferMultiSampling = true
-            };
+            _graphicsDeviceManager = new GraphicsDeviceManager(this);
         }
 
         protected override void Initialize()

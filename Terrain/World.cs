@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Renderer;
 using Renderer.Brushes;
 using Renderer.Meshes;
-using Renderer.Pens;
 using System;
 using System.Collections.Generic;
 using Plane = Renderer.Meshes.Plane;
@@ -127,7 +126,7 @@ namespace Terrain
 
         private void DrawTerrain(IRenderContext renderContext, ICamera camera, Matrix world)
         {
-            renderContext.DrawMesh(_terrain, world, camera.View, camera.Projection, _terrainBrush, new SolidColorPen(Color.Black));
+            renderContext.DrawMesh(_terrain, world, camera.View, camera.Projection, _terrainBrush);
         }
     }
 }
