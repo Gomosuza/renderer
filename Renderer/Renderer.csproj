@@ -33,9 +33,8 @@
     <DocumentationFile>bin\Release\Renderer.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoGame.Framework, Version=3.5.1.1679, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.5.1.1679\lib\net40\MonoGame.Framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MonoGame.Framework.WindowsDX.3.6.0.1625\lib\net40\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,21 +75,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Renderer.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
-    </GetAssemblyIdentity>
-    <Exec Command="..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe pack Renderer.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-  </Target>
-  <Target Name="EnsureNuGetExeExist" BeforeTargets="AfterBuild">
-    <PropertyGroup>
-      <ErrorText>This project uses nuget.exe from the package NuGet.CommandLine. Most likely you updated the nuget package but haven't yet edited the .csproj file. Edit the .csproj file (at the very end). Could not find: {0}</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NuGet.CommandLine.3.4.3\tools\NuGet.exe'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
